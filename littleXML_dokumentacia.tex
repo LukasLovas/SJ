@@ -1,0 +1,704 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[slovak]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\geometry{margin=2.5cm}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+\lstdefinestyle{plain}{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{black!35}
+}
+\lstset{style=plain}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\First}{\mathrm{FIRST}_1}
+\newcommand{\Follow}{\mathrm{FOLLOW}_1}
+\newcommand{\code}[1]{\ifmmode\text{\ttfamily #1}\else\texttt{#1}\fi}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    {\LARGE\bfseries littleXML\par}
+    \vspace{0.5cm}
+    {\Large Návrh a implementácia tabuľkou riadeného LL(1) analyzátora\par}
+    \vfill
+    {\large Dokumentácia riešenia\par}
+    \vspace{0.5cm}
+    {\large \today\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Zadanie a cieľ riešenia}
+
+Cieľom projektu je vytvoriť tabuľkou riadený syntaktický analyzátor zhora nadol pre jazyk \code{littleXML}. Riešenie obsahuje lexikálny analyzátor, LL(1) syntaktický analyzátor, prechodovú tabuľku, výpis krokového logu a jednoduché zotavenie z chýb v režime \code{panic}.
+
+Program pracuje so súbormi. Načíta vstupný súbor, vykoná analýzu a zapíše kompletný report do výstupného súboru. Rovnaký report sa vypíše aj do konzoly.
+
+\subsection{Pôvodná BNF gramatika}
+
+Pôvodná gramatika zo zadania je:
+
+\begin{lstlisting}
+xmldokument := [xmldecl] element.
+xmldecl := "<?xml" "version =" vernumb "?>".
+vernumb := number "." number.
+element := emptyelemtag | starttag (words | elements) endtag.
+starttag := "<" name ">".
+endtag := "</" name ">".
+words := {word}.
+elements := [element].
+emptyelemtag := "<" name "/>".
+name := (letter | "_" | ":") {namechar}.
+namechar := letter | digit | "." | "-" | "_" | ":".
+number := digit {digit}.
+word := char {char}.
+char := letter | digit | ďalšie znaky okrem "<" a ">".
+\end{lstlisting}
+
+Formálne možno gramatiku zapísať ako štvoricu
+\[
+G = (N, T, P, S),
+\]
+kde \(N\) je množina neterminálov, \(T\) množina terminálov, \(P\) množina pravidiel a \(S\) štartovací symbol. V našom riešení je štartovací symbol
+\[
+S = \texttt{xmldokument}.
+\]
+
+
+\section{Transformácia gramatiky}
+
+V tejto časti postupujeme rovnako ako pri ručnej konštrukcii LL(1) analyzátora. Najprv prepíšeme EBNF zápis na obyčajné produkčné pravidlá, potom odstránime spoločné prefixy, vypíšeme medzivýslednú gramatiku a až potom pomocou FIRST/FOLLOW pravých strán pravidiel zistíme konflikty.
+
+\subsection{Prepis EBNF formy na pravidlá}
+
+Zo zadania najprv odstránime EBNF skratky. Voliteľná časť \([X]\) sa prepíše ako alternatíva s \(\eps\), opakovanie \(\{X\}\) sa prepíše rekurziou a terminálne rozsahy písmen a číslic zapíšeme presnými skratkami \code{A..Z}, \code{a..z} a \code{0..9}.
+
+\begin{lstlisting}
+xmldokument -> xmldecl element | element
+xmldecl -> <?xml version= vernumb ?>
+vernumb -> number . number
+element -> emptyelemtag | starttag words endtag | starttag elements endtag
+starttag -> < name >
+endtag -> </ name >
+words -> word words | epsilon
+elements -> element | epsilon
+emptyelemtag -> < name />
+name -> namestart name_tail
+namestart -> letter | _ | :
+name_tail -> namechar name_tail | epsilon
+namechar -> letter | digit | . | - | _ | :
+letter -> A..Z | a..z
+number -> digit number_tail
+number_tail -> number | epsilon
+digit -> 0..9
+word -> char word_tail
+word_tail -> word | epsilon
+char -> letter | digit | . | - | _ | : | ! | @ | #
+\end{lstlisting}
+
+Tento zápis ešte nie je LL(1). Je to iba produkčný tvar pôvodného zadania, z ktorého ďalej odstraňujeme konflikty.
+
+\subsection{Úprava pravidiel}
+
+Po dosadení \code{emptyelemtag} a \code{starttag} do pravidla \code{element} dostaneme tri alternatívy so spoločným začiatkom:
+
+\begin{lstlisting}
+element -> < name /> | < name > words endtag | < name > elements endtag
+\end{lstlisting}
+
+Všetky pravé strany začínajú symbolom \code{<}, preto by sa do bunky \(M[\code{element}, \code{<}]\) zapisovali tri pravidlá. Spravíme ľavú faktorizáciu spoločného prefixu \code{< name}:
+
+\begin{lstlisting}
+element -> < name element_tail
+element_tail -> /> | > words endtag | > elements endtag
+\end{lstlisting}
+
+V pravidle \code{element\_tail} ešte ostal spoločný prefix \code{>} pri dvoch alternatívach, preto faktorizujeme aj ten:
+
+\begin{lstlisting}
+element -> < name element_tail
+element_tail -> /> | > element_body
+element_body -> words endtag | elements endtag
+\end{lstlisting}
+
+Po tejto úprave už vieme rozlíšiť prázdny element podľa \code{/>} a neprázdny element podľa \code{>}. Ešte však musíme overiť, či je jednoznačný aj obsah elementu.
+
+\subsection{Upravené pravidlá pred kontrolou LL(1)}
+
+Po uvedených úpravách dostávame túto medzivýslednú gramatiku. Pravidlá sú očíslované, aby sa dali priamo použiť pri tabuľke FIRST/FOLLOW pravých strán pravidiel.
+
+\begin{lstlisting}
+1  xmldokument -> xmldecl element
+2  xmldokument -> element
+3  xmldecl -> <?xml version= vernumb ?>
+4  vernumb -> number . number
+5  element -> < name element_tail
+6  element_tail -> />
+7  element_tail -> > element_body
+8  element_body -> words endtag
+9  element_body -> elements endtag
+10 words -> word words
+11 words -> epsilon
+12 elements -> element
+13 elements -> epsilon
+14 endtag -> </ name >
+15 name -> namestart name_tail
+16 namestart -> letter
+17 namestart -> _
+18 namestart -> :
+19 name_tail -> namechar name_tail
+20 name_tail -> epsilon
+21 namechar -> letter
+22 namechar -> digit
+23 namechar -> .
+24 namechar -> -
+25 namechar -> _
+26 namechar -> :
+27 letter -> A..Z | a..z
+28 number -> digit number_tail
+29 number_tail -> number
+30 number_tail -> epsilon
+31 digit -> 0..9
+32 word -> char word_tail
+33 word_tail -> word
+34 word_tail -> epsilon
+35 char -> letter
+36 char -> digit
+37 char -> .
+38 char -> -
+39 char -> _
+40 char -> :
+41 char -> !
+42 char -> @
+43 char -> #
+\end{lstlisting}
+
+\subsection{FIRST/FOLLOW pravých strán pravidiel}
+
+Pri tvorbe LL(1) prechodovej tabuľky sa nepočíta iba FIRST neterminálu, ale FIRST každej pravej strany pravidla. Ak pravá strana obsahuje \(\eps\), použije sa aj FOLLOW ľavej strany pravidla.
+
+Označme si množinu začiatkov textového slova:
+\[
+W = \{\code{.},\code{-},\code{\_},\code{:},\code{!},\code{@},\code{\#},\code{0..9},\code{A..Z},\code{a..z}\}.
+\]
+
+Nasledujúca tabuľka je kompletná tabuľka FIRST/FOLLOW pre pravé strany pravidiel z medzivýslednej gramatiky.
+
+\begin{longtable}{>{\ttfamily}p{0.06\textwidth}p{0.36\textwidth}p{0.30\textwidth}p{0.18\textwidth}}
+\toprule
+\normalfont Č. & \normalfont Pravá strana & \normalfont FIRST pravej strany & \normalfont FOLLOW pri \(\eps\) / poznámka \\
+\midrule
+\endhead
+1 & xmldecl element & \{\code{<?xml}\} & -- \\
+2 & element & \{\code{<}\} & -- \\
+3 & <?xml version= vernumb ?> & \{\code{<?xml}\} & -- \\
+4 & number . number & \{\code{0..9}\} & -- \\
+5 & < name element\_tail & \{\code{<}\} & -- \\
+6 & /> & \{\code{/>}\} & -- \\
+7 & > element\_body & \{\code{>}\} & -- \\
+8 & \textbf{words endtag} & \(W \cup \{\code{</}\}\) & \textbf{konflikt s 9} \\
+9 & \textbf{elements endtag} & \{\code{<}, \code{</}\} & \textbf{konflikt s 8} \\
+10 & word words & \(W\) & -- \\
+11 & epsilon & \{\(\eps\)\} & \(\Follow(\code{words})=\{\code{</}\}\) \\
+12 & element & \{\code{<}\} & -- \\
+13 & epsilon & \{\(\eps\)\} & \(\Follow(\code{elements})=\{\code{</}\}\) \\
+14 & </ name > & \{\code{</}\} & -- \\
+15 & namestart name\_tail & \{\code{\_}, \code{:}, \code{A..Z}, \code{a..z}\} & -- \\
+16 & letter & \{\code{A..Z}, \code{a..z}\} & -- \\
+17 & \_ & \{\code{\_}\} & -- \\
+18 & : & \{\code{:}\} & -- \\
+19 & namechar name\_tail & \{\code{.}, \code{-}, \code{\_}, \code{:}, \code{0..9}, \code{A..Z}, \code{a..z}\} & -- \\
+20 & epsilon & \{\(\eps\)\} & \(\Follow(\code{name\_tail})=\{\code{>},\code{/>}\}\) \\
+21 & letter & \{\code{A..Z}, \code{a..z}\} & -- \\
+22 & digit & \{\code{0..9}\} & -- \\
+23 & . & \{\code{.}\} & -- \\
+24 & - & \{\code{-}\} & -- \\
+25 & \_ & \{\code{\_}\} & -- \\
+26 & : & \{\code{:}\} & -- \\
+27 & A..Z | a..z & \{\code{A..Z}, \code{a..z}\} & -- \\
+28 & digit number\_tail & \{\code{0..9}\} & -- \\
+29 & number & \{\code{0..9}\} & -- \\
+30 & epsilon & \{\(\eps\)\} & \(\Follow(\code{number\_tail})=\{\code{?>},\code{.}\}\) \\
+31 & 0..9 & \{\code{0..9}\} & -- \\
+32 & char word\_tail & \(W\) & -- \\
+33 & \textbf{word} & \(W\) & \textbf{FIRST/FOLLOW konflikt s 34} \\
+34 & \textbf{epsilon} & \{\(\eps\)\} & \(\Follow(\code{word\_tail})=W\cup\{\code{</}\}\), \textbf{konflikt s 33} \\
+35 & letter & \{\code{A..Z}, \code{a..z}\} & -- \\
+36 & digit & \{\code{0..9}\} & -- \\
+37 & . & \{\code{.}\} & -- \\
+38 & - & \{\code{-}\} & -- \\
+39 & \_ & \{\code{\_}\} & -- \\
+40 & : & \{\code{:}\} & -- \\
+41 & ! & \{\code{!}\} & -- \\
+42 & @ & \{\code{@}\} & -- \\
+43 & \# & \{\code{\#}\} & -- \\
+\bottomrule
+\end{longtable}
+
+Z tabuľky vidíme hlavný \(\First/\First\) konflikt pri netermináli \code{element\_body}. Pravidlá 8 a 9 obsahujú vo FIRST množine rovnaký terminál \code{</}:
+
+\[
+\First(\texttt{words endtag}) \cap \First(\texttt{elements endtag}) = \{\texttt{</}\}.
+\]
+
+To znamená, že do jednej bunky prechodovej tabuľky by sa zapisovali dve pravidlá:
+\[
+M[\texttt{element\_body}, \texttt{</}] = 8
+\]
+a zároveň
+\[
+M[\texttt{element\_body}, \texttt{</}] = 9.
+\]
+
+Okrem toho je v tabuľke vyznačený aj \(\First/\Follow\) konflikt pri \code{word\_tail}: pravidlo 33 má FIRST množinu \(W\), ale epsilon pravidlo 34 sa zapisuje podľa \(\Follow(\code{word\_tail})\), ktoré tiež obsahuje \(W\):
+\[
+\First(\texttt{word}) \cap \Follow(\texttt{word\_tail}) = W.
+\]
+Preto musíme upraviť spôsob, akým reprezentujeme obsah elementu.
+
+\subsection{Odstránenie konfliktov a výsledná gramatika}
+
+Konflikt vznikol preto, že \code{words} aj \code{elements} mohli byť prázdne. Obsah elementu preto rozdelíme priamo podľa toho, akým symbolom začína:
+
+\begin{lstlisting}
+element_body -> word endtag | element endtag | endtag
+\end{lstlisting}
+
+V implementácii tento tvar zapisujeme kompaktnejšie ako samostatný neterminál \code{element\_content}:
+
+\begin{lstlisting}
+element_tail -> /> | > element_content endtag
+element_content -> word | element | epsilon
+\end{lstlisting}
+
+Tento zápis zodpovedá trom možnostiam: textový obsah, vnorený element alebo prázdny obsah. Zároveň už nepoužívame pôvodné pravidlá \code{words} a \code{elements}, ktoré spôsobovali konflikt.
+
+Výsledná LL(1) gramatika použitá v implementácii je:
+
+\begin{lstlisting}
+xmldokument -> xmldecl element | element
+xmldecl -> <?xml version= vernumb ?>
+vernumb -> number . number
+element -> < name element_tail
+element_tail -> /> | > element_content endtag
+element_content -> word | element | epsilon
+endtag -> </ name >
+name -> namestart name_tail
+namestart -> letter | _ | :
+name_tail -> namechar name_tail | epsilon
+namechar -> letter | digit | . | - | _ | :
+letter -> A..Z | a..z
+number -> digit number_tail
+number_tail -> number | epsilon
+digit -> 0..9
+word -> char word_tail
+word_tail -> word | epsilon
+char -> letter | digit | . | - | _ | : | ! | @ | #
+\end{lstlisting}
+
+Použité rozsahy sú skratky pre konkrétne terminály:
+\[
+\texttt{A..Z} = \{A,\ldots,Z\},
+\qquad
+\texttt{a..z} = \{a,\ldots,z\},
+\qquad
+\texttt{0..9} = \{0,\ldots,9\}.
+\]
+Riešenie nepoužíva skratkové tokeny \code{NAME} a \code{TEXT}. Meno tagu, číslo verzie a textové slovo sa skladajú až syntaktickou analýzou z detailných terminálov. V implementačnej tabuľke sa rozsahy iba technicky mapujú na peek triedy \code{LETTER} a \code{NUMBER}.
+
+\subsection{LL(1) podmienka}
+
+Pre dve alternatívy toho istého neterminálu
+\[
+A \to \alpha \mid \beta
+\]
+musí pri LL(1) gramatike platiť
+\[
+\First(\alpha) \cap \First(\beta) = \emptyset.
+\]
+Ak niektorá alternatíva vie odvodiť \(\eps\), musí byť zároveň splnená podmienka
+\[
+\First(\alpha) \cap \Follow(A) = \emptyset
+\]
+pre epsilon alternatívu. Transformácia gramatiky bola urobená práve preto, aby rozhodovanie podľa jedného symbolu bolo jednoznačné.
+
+\section{FIRST1 a FOLLOW1 množiny}
+
+Výpočet množín \(\First\) a \(\Follow\) vychádza z bežných pravidiel pre LL(1) gramatiky.
+
+Pre terminál \(a \in T\) platí:
+\[
+\First(a) = \{a\}.
+\]
+
+Pre pravidlo
+\[
+A \to X_1X_2\ldots X_n
+\]
+sa do \(\First(A)\) pridávajú terminály z \(\First(X_1)\). Ak \(X_1 \Rightarrow^* \eps\), pokračuje sa aj symbolom \(X_2\) atď. Ak celá pravá strana vie odvodiť \(\eps\), potom
+\[
+\eps \in \First(A).
+\]
+
+Pre štartovací symbol platí:
+\[
+\$ \in \Follow(S).
+\]
+
+Pre výpočet FOLLOW množín sa používa pravidlo:
+\[
+A \to \alpha B \beta
+\Rightarrow
+\First(\beta) \setminus \{\eps\} \subseteq \Follow(B).
+\]
+Ak
+\[
+\beta \Rightarrow^* \eps,
+\]
+potom platí aj:
+\[
+\Follow(A) \subseteq \Follow(B).
+\]
+
+\subsection{Použité skratky rozsahov}
+
+\begin{align*}
+0..9 &= \{0,1,2,3,4,5,6,7,8,9\},\\
+A..Z &= \{A,B,C,\ldots,X,Y,Z\},\\
+a..z &= \{a,b,c,\ldots,x,y,z\}.
+\end{align*}
+
+\subsection{Vypočítané množiny}
+
+\begin{longtable}{>{\ttfamily}p{0.23\textwidth}p{0.33\textwidth}p{0.33\textwidth}}
+\toprule
+\normalfont Neterminál & \(\First\) & \(\Follow\) \\
+\midrule
+\endhead
+xmldokument & \{\texttt{<?xml}, \texttt{<}\} & \{\texttt{\$}\} \\
+xmldecl & \{\texttt{<?xml}\} & \{\texttt{<}\} \\
+vernumb & \{\texttt{0},\ldots,\texttt{9}\} & \{\texttt{?>}\} \\
+element & \{\texttt{<}\} & \{\texttt{\$}, \texttt{</}\} \\
+element\_tail & \{\texttt{/>}, \texttt{>}\} & \{\texttt{\$}, \texttt{</}\} \\
+element\_content & \{\(\eps\), \texttt{<}, \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{!}, \texttt{@}, \texttt{\#}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{</}\} \\
+endtag & \{\texttt{</}\} & \{\texttt{\$}, \texttt{</}\} \\
+name & \{\texttt{\_}, \texttt{:}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{>}, \texttt{/>}\} \\
+namestart & \{\texttt{\_}, \texttt{:}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{>}, \texttt{/>}, \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} \\
+name\_tail & \{\(\eps\), \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{>}, \texttt{/>}\} \\
+namechar & \{\texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{>}, \texttt{/>}, \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} \\
+letter & \{\texttt{A..Z}, \texttt{a..z}\} & \{\texttt{>}, \texttt{</}, \texttt{/>}, \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{!}, \texttt{@}, \texttt{\#}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} \\
+number & \{\texttt{0},\ldots,\texttt{9}\} & \{\texttt{?>}, \texttt{.}\} \\
+number\_tail & \{\(\eps\), \texttt{0},\ldots,\texttt{9}\} & \{\texttt{?>}, \texttt{.}\} \\
+digit & \{\texttt{0},\ldots,\texttt{9}\} & \{\texttt{?>}, \texttt{>}, \texttt{</}, \texttt{/>}, \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{!}, \texttt{@}, \texttt{\#}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} \\
+word & \{\texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{!}, \texttt{@}, \texttt{\#}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{</}\} \\
+word\_tail & \{\(\eps\), \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{!}, \texttt{@}, \texttt{\#}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{</}\} \\
+char & \{\texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{!}, \texttt{@}, \texttt{\#}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} & \{\texttt{</}, \texttt{.}, \texttt{-}, \texttt{\_}, \texttt{:}, \texttt{!}, \texttt{@}, \texttt{\#}, \texttt{0..9}, \texttt{A..Z}, \texttt{a..z}\} \\
+\bottomrule
+\end{longtable}
+
+\section{Prechodová tabuľka}
+
+Prechodová tabuľka je implementovaná v triede \code{Grammar} a zároveň uložená v súbore \code{table.txt}. Položka tabuľky má tvar:
+\[
+M[A,a] = A \to \alpha,
+\]
+kde \(A\) je neterminál na vrchu zásobníka a \(a\) je aktuálny vstupný symbol, v reporte označený ako \code{Peek}.
+
+\begin{longtable}{>{\ttfamily}p{0.24\textwidth}>{\ttfamily}p{0.16\textwidth}>{\ttfamily}p{0.46\textwidth}}
+\toprule
+\normalfont Neterminál & \normalfont Peek & \normalfont Pravá strana pravidla \\
+\midrule
+\endhead
+xmldokument & <?xml & xmldecl element \\
+xmldokument & < & element \\
+xmldecl & <?xml & <?xml version= vernumb ?> \\
+vernumb & NUMBER & number . number \\
+element & < & < name element\_tail \\
+element\_tail & /> & /> \\
+element\_tail & > & > element\_content endtag \\
+element\_content & LETTER & word \\
+element\_content & NUMBER & word \\
+element\_content & . & word \\
+element\_content & - & word \\
+element\_content & \_ & word \\
+element\_content & : & word \\
+element\_content & ! & word \\
+element\_content & @ & word \\
+element\_content & \# & word \\
+element\_content & < & element \\
+element\_content & </ & epsilon \\
+endtag & </ & </ name > \\
+name & LETTER & namestart name\_tail \\
+name & \_ & namestart name\_tail \\
+name & : & namestart name\_tail \\
+namestart & LETTER & letter \\
+namestart & \_ & \_ \\
+namestart & : & : \\
+name\_tail & LETTER & namechar name\_tail \\
+name\_tail & NUMBER & namechar name\_tail \\
+name\_tail & . & namechar name\_tail \\
+name\_tail & - & namechar name\_tail \\
+name\_tail & \_ & namechar name\_tail \\
+name\_tail & : & namechar name\_tail \\
+name\_tail & > & epsilon \\
+name\_tail & /> & epsilon \\
+namechar & LETTER & letter \\
+namechar & NUMBER & digit \\
+namechar & . & . \\
+namechar & - & - \\
+namechar & \_ & \_ \\
+namechar & : & : \\
+letter & LETTER & LETTER \\
+number & NUMBER & digit number\_tail \\
+number\_tail & NUMBER & number \\
+number\_tail & ?> & epsilon \\
+number\_tail & . & epsilon \\
+digit & NUMBER & NUMBER \\
+word & LETTER & char word\_tail \\
+word & NUMBER & char word\_tail \\
+word & . & char word\_tail \\
+word & - & char word\_tail \\
+word & \_ & char word\_tail \\
+word & : & char word\_tail \\
+word & ! & char word\_tail \\
+word & @ & char word\_tail \\
+word & \# & char word\_tail \\
+word\_tail & LETTER & word \\
+word\_tail & NUMBER & word \\
+word\_tail & . & word \\
+word\_tail & - & word \\
+word\_tail & \_ & word \\
+word\_tail & : & word \\
+word\_tail & ! & word \\
+word\_tail & @ & word \\
+word\_tail & \# & word \\
+word\_tail & </ & epsilon \\
+char & LETTER & letter \\
+char & NUMBER & digit \\
+char & . & . \\
+char & - & - \\
+char & \_ & \_ \\
+char & : & : \\
+char & ! & ! \\
+char & @ & @ \\
+char & \# & \# \\
+\bottomrule
+\end{longtable}
+
+\section{Lexikálny analyzátor}
+
+Lexikálny analyzátor je implementovaný v triede \code{Tokenizer}. Prechádza vstup zľava doprava a produkuje tokeny, ktoré sú priamo terminálmi gramatiky. Každý token obsahuje typ, hodnotu, riadok, stĺpec a index vo vstupnom texte.
+
+Analyzátor najprv skúša pevné viacznakové a jednoznakové terminály:
+
+\begin{lstlisting}
+<?xml  version=  ?>  </  />  <  >  .  -  :  _  !  @  #
+\end{lstlisting}
+
+Ak sa nenašiel pevný terminál, vstupný znak sa klasifikuje ako:
+\[
+\texttt{LETTER}, \quad \text{ak } c \in \{A..Z,a..z\},
+\]
+alebo
+\[
+\texttt{NUMBER}, \quad \text{ak } c \in \{0..9\}.
+\]
+
+Biele znaky sa preskakujú. To znamená, že vstupy \code{<root/>} a \code{< root />} sú lexikálne rozpoznateľné, hoci syntaktická správnosť sa následne posudzuje podľa tokenovej postupnosti a prechodovej tabuľky.
+
+\subsection{Lexikálne chyby}
+
+Ak sa nájde znak, ktorý nepatrí medzi povolené terminály ani do tried \code{LETTER}/\code{NUMBER}, vytvorí sa diagnostika fázy \code{LEX}. V režime \code{off} analýza končí pri prvej lexikálnej chybe. V režime \code{panic} lexikálny analyzátor preskočí neznámy úsek po najbližší rozpoznateľný token alebo biely znak.
+
+\section{Syntaktický analyzátor}
+
+Syntaktický analyzátor je implementovaný v triede \code{Parser}. Ide o tabuľkou riadený LL(1) analyzátor so zásobníkom.
+
+\subsection{Algoritmus}
+
+Na začiatku je na zásobníku:
+\[
+[\$, S] = [\texttt{EOF}, \texttt{xmldokument}].
+\]
+
+V každej iterácii parser vykoná tieto kroky:
+
+\begin{enumerate}
+    \item Zoberie symbol z vrchu zásobníka.
+    \item Pozrie aktuálny vstupný token, v reporte označený ako \code{Peek}.
+    \item Ak je vrch zásobníka terminál a zhoduje sa s \code{Peek}, token sa spotrebuje.
+    \item Ak je vrch zásobníka neterminál, použije sa položka prechodovej tabuľky \(M[A,a]\).
+    \item Pravá strana vybraného pravidla sa vloží na zásobník v opačnom poradí.
+    \item Ak zásobník aj vstup skončia na \code{EOF} bez diagnostiky, vstup je syntakticky správny.
+\end{enumerate}
+
+Jedna iterácia v reporte obsahuje:
+
+\begin{lstlisting}
+Zasobnik pred
+Vstup pred
+Peek
+Krok
+Zasobnik po
+Vstup po
+\end{lstlisting}
+
+Položka \code{Peek} obsahuje aj pozíciu tokenu vo vstupnom súbore, napríklad:
+\begin{lstlisting}
+Peek          : LETTER('a') (riadok 1, stlpec 2)
+\end{lstlisting}
+
+\section{Zotavenie z chýb}
+
+Program podporuje dva režimy zotavenia:
+\[
+\texttt{recovery} \in \{\texttt{off}, \texttt{panic}\}.
+\]
+
+\subsection{Režim off}
+
+V režime \code{off} analýza končí pri prvej lexikálnej alebo syntaktickej chybe. Tento režim je vhodný na jednoduché overenie, či je vstup správny.
+
+\subsection{Režim panic}
+
+V režime \code{panic} sa parser pokúsi pokračovať po syntaktickej chybe. Ak je na vrchu zásobníka neterminál \(A\) a pre dvojicu \((A,a)\) neexistuje pravidlo v tabuľke, použije sa synchronizačná množina:
+\[
+sync(A) = \Follow(A).
+\]
+
+Parser preskakuje vstupné tokeny, kým nenájde token zo \(sync(A)\) alebo \code{EOF}. Následne zahodí problémový neterminál zo zásobníka a pokračuje v analýze.
+
+\subsection{Príklad panic recovery}
+
+Vstup:
+\begin{lstlisting}
+<root><a/><b/></root>
+\end{lstlisting}
+
+Gramatika povoľuje najviac jeden vnorený element. Po spracovaní \code{<a/>} parser očakáva neterminál \code{endtag}. Aktuálny vstup je však \code{<b/>}. Pre dvojicu
+\[
+(\texttt{endtag}, \texttt{<})
+\]
+neexistuje pravidlo. Použije sa:
+\[
+\Follow(\texttt{endtag}) = \{\texttt{\$}, \texttt{</}\}.
+\]
+
+Parser preto preskočí tokeny zodpovedajúce \code{<b/>} a zastaví sa až na \code{</}. V reporte sa objaví krok podobný:
+
+\begin{lstlisting}
+Krok          : panic: skipped <, LETTER, />; sync(endtag)={EOF, </}
+\end{lstlisting}
+
+Vstup zostane odmietnutý, ale parser dokáže pokračovať a vypísať viac informácií o priebehu analýzy.
+
+\section{Spustenie programu}
+
+Program sa dá spustiť dvoma spôsobmi. Bežný spôsob je bez argumentov:
+
+\begin{lstlisting}
+python .\projekt\main.py
+\end{lstlisting}
+
+V tomto režime program vypíše súbory z priečinka \code{projekt/inputs}, používateľ si vyberie vstup a následne zvolí režim zotavenia \code{off} alebo \code{panic}. Report sa uloží do priečinka \code{projekt/outputs}. Názov výstupu sa vytvorí z názvu vstupného súboru a zvoleného režimu.
+
+Program stále podporuje aj priame spustenie so zadaným vstupom a výstupom:
+
+\begin{lstlisting}
+python .\projekt\main.py <vstupny_subor> <vystupny_subor> [off|panic]
+\end{lstlisting}
+
+Ak sa režim nezadá, použije sa predvolený režim \code{off}.
+
+Príklad bez zotavenia:
+\begin{lstlisting}
+python .\projekt\main.py .\projekt\inputs\01_valid_empty_element.xml .\projekt\outputs\manual_report.txt off
+\end{lstlisting}
+
+Príklad s panic zotavením:
+\begin{lstlisting}
+python .\projekt\main.py .\projekt\inputs\07_invalid_two_nested_children.xml .\projekt\outputs\panic_report.txt panic
+\end{lstlisting}
+
+Výstupný report obsahuje:
+\begin{itemize}
+    \item vstupný súbor a režim zotavenia,
+    \item pôvodný vstup,
+    \item zoznam tokenov,
+    \item kompletný log syntaktického analyzátora,
+    \item problémy validácie,
+    \item výsledok \code{SYNTAX OK} alebo \code{SYNTAX ERROR}.
+\end{itemize}
+
+\section{Štruktúra implementácie}
+
+\begin{longtable}{>{\ttfamily}p{0.32\textwidth}p{0.58\textwidth}}
+\toprule
+\normalfont Súbor & \normalfont Význam \\
+\midrule
+\endhead
+main.py & vstupný bod programu, spracovanie argumentov a súborový vstup/výstup \\
+grammar.py & terminály, neterminály, FOLLOW množiny a prechodová tabuľka \\
+tokenizer.py & lexikálny analyzátor detailných terminálov \\
+parser.py & tabuľkou riadený LL(1) syntaktický analyzátor \\
+analyzer.py & prepojenie lexikálnej a syntaktickej analýzy \\
+token.py & triedy \code{Token} a \code{ErrorLog} \\
+table.txt & editovateľná prechodová tabuľka \\
+inputs/ & pripravené vstupné súbory na testovanie \\
+outputs/ & priečinok pre vygenerované reporty \\
+\bottomrule
+\end{longtable}
+
+\section{Testovacie vstupy}
+
+\subsection{Pripravené vstupy}
+
+\begin{longtable}{>{\ttfamily}p{0.43\textwidth}p{0.18\textwidth}p{0.29\textwidth}}
+\toprule
+\normalfont Súbor & \normalfont Výsledok & \normalfont Účel \\
+\midrule
+\endhead
+01\_valid\_empty\_element.xml & OK & prázdny element \\
+02\_valid\_xml\_declaration.xml & OK & XML deklarácia a verzia \\
+03\_valid\_text\_content.xml & OK & textový obsah elementu \\
+04\_valid\_one\_nested\_element.xml & OK & jeden vnorený element \\
+05\_valid\_nested\_text.xml & OK & hlbšie vnorenie s textom \\
+06\_valid\_mismatched\_names\_by\_grammar.xml & OK & tvar je gramaticky správny, názvy tagov sa neporovnávajú \\
+07\_invalid\_two\_nested\_children.xml & ERROR & dva vnorené elementy za sebou \\
+08\_invalid\_text\_then\_element.xml & ERROR & miešanie textu a elementu v jednom obsahu \\
+09\_invalid\_bad\_version.xml & ERROR & neplatný tvar čísla verzie \\
+10\_invalid\_name\_starts\_with\_digit.xml & ERROR & meno tagu začína číslicou \\
+11\_invalid\_lexical\_recovery.xml & ERROR & neznámy znak na otestovanie recovery \\
+\bottomrule
+\end{longtable}
+
+\section{Záver}
+
+Výsledkom je tabuľkou riadený LL(1) analyzátor pre jazyk \code{littleXML}. Gramatika bola transformovaná tak, aby odstránila konflikty spoločného prefixu a umožnila rozhodovanie podľa jedného vstupného symbolu. Implementácia používa detailné terminály namiesto tokenov \code{NAME} a \code{TEXT}, vďaka čomu zodpovedá výpočtom FIRST1/FOLLOW1 nad transformovanou gramatikou. Parser poskytuje kompletný krokový log a podporuje panic recovery založené na FOLLOW množinách.
+
+\end{document}
