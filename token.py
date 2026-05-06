@@ -7,7 +7,7 @@ class Token:
         self.index = index
 
     def short(self):
-        if self.token_type == "EOF":
+        if self.token_type == "$":
             return "$"
 
         if self.token_type == "LETTER" or self.token_type == "NUMBER":

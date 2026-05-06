@@ -18,15 +18,24 @@ class Analyzer:
         diagnostics.extend(parser.diagnostics)
 
         accepted = len(diagnostics) == 0 and parser.accepted
-        return AnalysisResult(accepted, tokens, parser.log, diagnostics)
+        return AnalysisResult(
+            accepted,
+            tokens,
+            parser.log,
+            diagnostics,
+            parser.rule_sequence,
+            self.grammar.format_transition_table(),
+        )
 
 
 class AnalysisResult:
-    def __init__(self, accepted, tokens, log, diagnostics):
+    def __init__(self, accepted, tokens, log, diagnostics, rule_sequence, transition_table):
         self.accepted = accepted
         self.tokens = tokens
         self.log = log
         self.diagnostics = diagnostics
+        self.rule_sequence = rule_sequence
+        self.transition_table = transition_table
 
     def format_report(self, source, input_file, recovery):
         lines = []
@@ -40,6 +49,13 @@ class AnalysisResult:
         lines.append(source)
         lines.append("")
         lines.append("-" * 92)
+        lines.append("Pravidla gramatiky")
+        lines.append("-" * 92)
+        for line in self.transition_table:
+            lines.append(line)
+
+        lines.append("")
+        lines.append("-" * 92)
         lines.append("Tokeny")
         lines.append("-" * 92)
         for index, token in enumerate(self.tokens, start=1):
@@ -51,6 +67,15 @@ class AnalysisResult:
         lines.append("-" * 92)
         for line in self.log:
             lines.append(line)
+
+        lines.append("")
+        lines.append("-" * 92)
+        lines.append("Pouzite pravidla")
+        lines.append("-" * 92)
+        if len(self.rule_sequence) == 0:
+            lines.append("(ziadne)")
+        else:
+            lines.append(", ".join(str(rule_id) for rule_id in self.rule_sequence))
 
         lines.append("")
         lines.append("-" * 92)

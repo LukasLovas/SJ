@@ -1,0 +1,446 @@
+============================================================================================
+littleXML LL(1) analyza
+============================================================================================
+Vstupny subor : D:\Škola\Ing\2.semester\SJ\projekt\inputs\07_invalid_two_nested_children.xml
+Recovery mode : panic
+
+Vstup:
+<root><a/><b/></root>
+
+
+--------------------------------------------------------------------------------------------
+Prechodova tabulka
+--------------------------------------------------------------------------------------------
+CSV matica s cislami pravidiel:
+non-terminals / characters,<?xml,version=,?>,.,<,>,</,-,:,_,/>,LETTER,NUMBER,!,@,#,$
+xmldokument,1,,,,2,,,,,,,,,,,,
+xmldecl,3,,,,,,,,,,,,,,,,
+vernumb,,,,,,,,,,,,,4,,,,
+element,,,,,5,,,,,,,,,,,,
+element_tail,,,,,,7,,,,,6,,,,,,
+element_content,,,,8,9,,10,8,8,8,,8,8,8,8,8,
+endtag,,,,,,,11,,,,,,,,,,
+name,,,,,,,,,12,12,,12,,,,,
+namestart,,,,,,,,,15,14,,13,,,,,
+name_tail,,,,16,,17,,16,16,16,17,16,16,,,,
+namechar,,,,20,,,,21,23,22,,18,19,,,,
+letter,,,,,,,,,,,,24,,,,,
+number,,,,,,,,,,,,,25,,,,
+number_tail,,,27,27,,,,,,,,,26,,,,
+digit,,,,,,,,,,,,,28,,,,
+word,,,,29,,,,29,29,29,,29,29,29,29,29,
+word_tail,,,,30,,,31,30,30,30,,30,30,30,30,30,
+char,,,,34,,,,35,37,36,,32,33,38,39,40,
+
+Legenda pravidiel:
+01: xmldokument -> xmldecl element
+02: xmldokument -> element
+03: xmldecl -> <?xml version= vernumb ?>
+04: vernumb -> number . number
+05: element -> < name element_tail
+06: element_tail -> />
+07: element_tail -> > element_content endtag
+08: element_content -> word
+09: element_content -> element
+10: element_content -> epsilon
+11: endtag -> </ name >
+12: name -> namestart name_tail
+13: namestart -> letter
+14: namestart -> _
+15: namestart -> :
+16: name_tail -> namechar name_tail
+17: name_tail -> epsilon
+18: namechar -> letter
+19: namechar -> digit
+20: namechar -> .
+21: namechar -> -
+22: namechar -> _
+23: namechar -> :
+24: letter -> LETTER
+25: number -> digit number_tail
+26: number_tail -> number
+27: number_tail -> epsilon
+28: digit -> NUMBER
+29: word -> char word_tail
+30: word_tail -> word
+31: word_tail -> epsilon
+32: char -> letter
+33: char -> digit
+34: char -> .
+35: char -> -
+36: char -> _
+37: char -> :
+38: char -> !
+39: char -> @
+40: char -> #
+
+--------------------------------------------------------------------------------------------
+Tokeny
+--------------------------------------------------------------------------------------------
+001 | 1:1 <
+002 | 1:2 LETTER('r')
+003 | 1:3 LETTER('o')
+004 | 1:4 LETTER('o')
+005 | 1:5 LETTER('t')
+006 | 1:6 >
+007 | 1:7 <
+008 | 1:8 LETTER('a')
+009 | 1:9 />
+010 | 1:11 <
+011 | 1:12 LETTER('b')
+012 | 1:13 />
+013 | 1:15 </
+014 | 1:17 LETTER('r')
+015 | 1:18 LETTER('o')
+016 | 1:19 LETTER('o')
+017 | 1:20 LETTER('t')
+018 | 1:21 >
+019 | 2:1 $
+
+--------------------------------------------------------------------------------------------
+Log syntaktickeho analyzatora
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+Iteracia 001
+Zasobnik pred : xmldokument $
+Vstup pred    : < LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : rule 2: xmldokument -> element
+Zasobnik po   : element $
+Vstup po      : < LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 002
+Zasobnik pred : element $
+Vstup pred    : < LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : rule 5: element -> < name element_tail
+Zasobnik po   : < name element_tail $
+Vstup po      : < LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 003
+Zasobnik pred : < name element_tail $
+Vstup pred    : < LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : match <
+Zasobnik po   : name element_tail $
+Vstup po      : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 004
+Zasobnik pred : name element_tail $
+Vstup pred    : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('r') (riadok 1, stlpec 2)
+Krok          : rule 12: name -> namestart name_tail
+Zasobnik po   : namestart name_tail element_tail $
+Vstup po      : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 005
+Zasobnik pred : namestart name_tail element_tail $
+Vstup pred    : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('r') (riadok 1, stlpec 2)
+Krok          : rule 13: namestart -> letter
+Zasobnik po   : letter name_tail element_tail $
+Vstup po      : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 006
+Zasobnik pred : letter name_tail element_tail $
+Vstup pred    : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('r') (riadok 1, stlpec 2)
+Krok          : rule 24: letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail $
+Vstup po      : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 007
+Zasobnik pred : LETTER name_tail element_tail $
+Vstup pred    : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> <
+                LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('r') (riadok 1, stlpec 2)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 008
+Zasobnik pred : name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 3)
+Krok          : rule 16: name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 009
+Zasobnik pred : namechar name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 3)
+Krok          : rule 18: namechar -> letter
+Zasobnik po   : letter name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 010
+Zasobnik pred : letter name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 3)
+Krok          : rule 24: letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 011
+Zasobnik pred : LETTER name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </
+                LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 3)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 012
+Zasobnik pred : name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 4)
+Krok          : rule 16: name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 013
+Zasobnik pred : namechar name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 4)
+Krok          : rule 18: namechar -> letter
+Zasobnik po   : letter name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 014
+Zasobnik pred : letter name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 4)
+Krok          : rule 24: letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail $
+Vstup po      : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 015
+Zasobnik pred : LETTER name_tail element_tail $
+Vstup pred    : LETTER('o') LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r')
+                LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : LETTER('o') (riadok 1, stlpec 4)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail $
+Vstup po      : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 016
+Zasobnik pred : name_tail element_tail $
+Vstup pred    : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+Peek          : LETTER('t') (riadok 1, stlpec 5)
+Krok          : rule 16: name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail $
+Vstup po      : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 017
+Zasobnik pred : namechar name_tail element_tail $
+Vstup pred    : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+Peek          : LETTER('t') (riadok 1, stlpec 5)
+Krok          : rule 18: namechar -> letter
+Zasobnik po   : letter name_tail element_tail $
+Vstup po      : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 018
+Zasobnik pred : letter name_tail element_tail $
+Vstup pred    : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+Peek          : LETTER('t') (riadok 1, stlpec 5)
+Krok          : rule 24: letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail $
+Vstup po      : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 019
+Zasobnik pred : LETTER name_tail element_tail $
+Vstup pred    : LETTER('t') > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o')
+                LETTER('o') LETTER('t') > $
+Peek          : LETTER('t') (riadok 1, stlpec 5)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail $
+Vstup po      : > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 020
+Zasobnik pred : name_tail element_tail $
+Vstup pred    : > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : > (riadok 1, stlpec 6)
+Krok          : rule 17: name_tail -> epsilon
+Zasobnik po   : element_tail $
+Vstup po      : > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 021
+Zasobnik pred : element_tail $
+Vstup pred    : > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : > (riadok 1, stlpec 6)
+Krok          : rule 7: element_tail -> > element_content endtag
+Zasobnik po   : > element_content endtag $
+Vstup po      : > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 022
+Zasobnik pred : > element_content endtag $
+Vstup pred    : > < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : > (riadok 1, stlpec 6)
+Krok          : match >
+Zasobnik po   : element_content endtag $
+Vstup po      : < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 023
+Zasobnik pred : element_content endtag $
+Vstup pred    : < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : < (riadok 1, stlpec 7)
+Krok          : rule 9: element_content -> element
+Zasobnik po   : element endtag $
+Vstup po      : < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 024
+Zasobnik pred : element endtag $
+Vstup pred    : < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : < (riadok 1, stlpec 7)
+Krok          : rule 5: element -> < name element_tail
+Zasobnik po   : < name element_tail endtag $
+Vstup po      : < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 025
+Zasobnik pred : < name element_tail endtag $
+Vstup pred    : < LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : < (riadok 1, stlpec 7)
+Krok          : match <
+Zasobnik po   : name element_tail endtag $
+Vstup po      : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 026
+Zasobnik pred : name element_tail endtag $
+Vstup pred    : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : LETTER('a') (riadok 1, stlpec 8)
+Krok          : rule 12: name -> namestart name_tail
+Zasobnik po   : namestart name_tail element_tail endtag $
+Vstup po      : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 027
+Zasobnik pred : namestart name_tail element_tail endtag $
+Vstup pred    : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : LETTER('a') (riadok 1, stlpec 8)
+Krok          : rule 13: namestart -> letter
+Zasobnik po   : letter name_tail element_tail endtag $
+Vstup po      : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 028
+Zasobnik pred : letter name_tail element_tail endtag $
+Vstup pred    : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : LETTER('a') (riadok 1, stlpec 8)
+Krok          : rule 24: letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail endtag $
+Vstup po      : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 029
+Zasobnik pred : LETTER name_tail element_tail endtag $
+Vstup pred    : LETTER('a') /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o')
+                LETTER('t') > $
+Peek          : LETTER('a') (riadok 1, stlpec 8)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail endtag $
+Vstup po      : /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 030
+Zasobnik pred : name_tail element_tail endtag $
+Vstup pred    : /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : /> (riadok 1, stlpec 9)
+Krok          : rule 17: name_tail -> epsilon
+Zasobnik po   : element_tail endtag $
+Vstup po      : /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 031
+Zasobnik pred : element_tail endtag $
+Vstup pred    : /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : /> (riadok 1, stlpec 9)
+Krok          : rule 6: element_tail -> />
+Zasobnik po   : /> endtag $
+Vstup po      : /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 032
+Zasobnik pred : /> endtag $
+Vstup pred    : /> < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : /> (riadok 1, stlpec 9)
+Krok          : match />
+Zasobnik po   : endtag $
+Vstup po      : < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 033
+Zasobnik pred : endtag $
+Vstup pred    : < LETTER('b') /> </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : < (riadok 1, stlpec 11)
+Krok          : panic: skipped <, LETTER, />; sync(endtag)={$, </}
+Zasobnik po   : $
+Vstup po      : </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+--------------------------------------------------------------------------------------------
+Iteracia 034
+Zasobnik pred : $
+Vstup pred    : </ LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+Peek          : </ (riadok 1, stlpec 15)
+Krok          : panic: discard unexpected </; expected $, got </
+Zasobnik po   : (prazdne)
+Vstup po      : LETTER('r') LETTER('o') LETTER('o') LETTER('t') > $
+
+--------------------------------------------------------------------------------------------
+Pouzite pravidla
+--------------------------------------------------------------------------------------------
+2, 5, 12, 13, 24, 16, 18, 24, 16, 18, 24, 16, 18, 24, 17, 7, 9, 5, 12, 13, 24, 17, 6
+
+--------------------------------------------------------------------------------------------
+Problemy validacie
+--------------------------------------------------------------------------------------------
+SA at 1:11: no rule for endtag with lookahead <; expected one of </ [<]
+SA at 1:15: expected $, got </ [</]
+
+============================================================================================
+VYSLEDOK: SYNTAX ERROR
+============================================================================================

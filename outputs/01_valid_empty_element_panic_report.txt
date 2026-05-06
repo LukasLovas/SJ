@@ -1,0 +1,168 @@
+============================================================================================
+littleXML LL(1) analyza
+============================================================================================
+Vstupny subor : .\inputs\01_valid_empty_element.xml
+Recovery mode : panic
+
+Vstup:
+<a/>
+
+
+--------------------------------------------------------------------------------------------
+Pravidla gramatiky
+--------------------------------------------------------------------------------------------
+Pravidla:
+01: xmldokument -> xmldecl element
+02: xmldokument -> element
+03: xmldecl -> <?xml version= vernumb ?>
+04: vernumb -> number . number
+05: element -> < name element_tail
+06: element_tail -> />
+07: element_tail -> > element_content endtag
+08: element_content -> word
+09: element_content -> element
+10: element_content -> epsilon
+11: endtag -> </ name >
+12: name -> namestart name_tail
+13: namestart -> letter
+14: namestart -> _
+15: namestart -> :
+16: name_tail -> namechar name_tail
+17: name_tail -> epsilon
+18: namechar -> letter
+19: namechar -> digit
+20: namechar -> .
+21: namechar -> -
+22: namechar -> _
+23: namechar -> :
+24: letter -> LETTER
+25: number -> digit number_tail
+26: number_tail -> number
+27: number_tail -> epsilon
+28: digit -> NUMBER
+29: word -> char word_tail
+30: word_tail -> word
+31: word_tail -> epsilon
+32: char -> letter
+33: char -> digit
+34: char -> .
+35: char -> -
+36: char -> _
+37: char -> :
+38: char -> !
+39: char -> @
+40: char -> #
+
+--------------------------------------------------------------------------------------------
+Tokeny
+--------------------------------------------------------------------------------------------
+001 | 1:1 <
+002 | 1:2 LETTER('a')
+003 | 1:3 />
+004 | 2:1 $
+
+--------------------------------------------------------------------------------------------
+Log syntaktickeho analyzatora
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+Iteracia 001
+Zasobnik pred : xmldokument $
+Vstup pred    : < LETTER('a') /> $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : rule 2: xmldokument -> element
+Zasobnik po   : element $
+Vstup po      : < LETTER('a') /> $
+--------------------------------------------------------------------------------------------
+Iteracia 002
+Zasobnik pred : element $
+Vstup pred    : < LETTER('a') /> $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : rule 5: element -> < name element_tail
+Zasobnik po   : < name element_tail $
+Vstup po      : < LETTER('a') /> $
+--------------------------------------------------------------------------------------------
+Iteracia 003
+Zasobnik pred : < name element_tail $
+Vstup pred    : < LETTER('a') /> $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : match <
+Zasobnik po   : name element_tail $
+Vstup po      : LETTER('a') /> $
+--------------------------------------------------------------------------------------------
+Iteracia 004
+Zasobnik pred : name element_tail $
+Vstup pred    : LETTER('a') /> $
+Peek          : LETTER('a') (riadok 1, stlpec 2)
+Krok          : rule 12: name -> namestart name_tail
+Zasobnik po   : namestart name_tail element_tail $
+Vstup po      : LETTER('a') /> $
+--------------------------------------------------------------------------------------------
+Iteracia 005
+Zasobnik pred : namestart name_tail element_tail $
+Vstup pred    : LETTER('a') /> $
+Peek          : LETTER('a') (riadok 1, stlpec 2)
+Krok          : rule 13: namestart -> letter
+Zasobnik po   : letter name_tail element_tail $
+Vstup po      : LETTER('a') /> $
+--------------------------------------------------------------------------------------------
+Iteracia 006
+Zasobnik pred : letter name_tail element_tail $
+Vstup pred    : LETTER('a') /> $
+Peek          : LETTER('a') (riadok 1, stlpec 2)
+Krok          : rule 24: letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail $
+Vstup po      : LETTER('a') /> $
+--------------------------------------------------------------------------------------------
+Iteracia 007
+Zasobnik pred : LETTER name_tail element_tail $
+Vstup pred    : LETTER('a') /> $
+Peek          : LETTER('a') (riadok 1, stlpec 2)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail $
+Vstup po      : /> $
+--------------------------------------------------------------------------------------------
+Iteracia 008
+Zasobnik pred : name_tail element_tail $
+Vstup pred    : /> $
+Peek          : /> (riadok 1, stlpec 3)
+Krok          : rule 17: name_tail -> epsilon
+Zasobnik po   : element_tail $
+Vstup po      : /> $
+--------------------------------------------------------------------------------------------
+Iteracia 009
+Zasobnik pred : element_tail $
+Vstup pred    : /> $
+Peek          : /> (riadok 1, stlpec 3)
+Krok          : rule 6: element_tail -> />
+Zasobnik po   : /> $
+Vstup po      : /> $
+--------------------------------------------------------------------------------------------
+Iteracia 010
+Zasobnik pred : /> $
+Vstup pred    : /> $
+Peek          : /> (riadok 1, stlpec 3)
+Krok          : match />
+Zasobnik po   : $
+Vstup po      : $
+--------------------------------------------------------------------------------------------
+Iteracia 011
+Zasobnik pred : $
+Vstup pred    : $
+Peek          : $ (riadok 2, stlpec 1)
+Krok          : match $
+Zasobnik po   : (prazdne)
+Vstup po      : (prazdne)
+
+--------------------------------------------------------------------------------------------
+Pouzite pravidla
+--------------------------------------------------------------------------------------------
+2, 5, 12, 13, 24, 17, 6
+
+--------------------------------------------------------------------------------------------
+Problemy validacie
+--------------------------------------------------------------------------------------------
+(ziadne)
+
+============================================================================================
+VYSLEDOK: SYNTAX OK
+============================================================================================

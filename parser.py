@@ -11,6 +11,7 @@ class Parser:
         self.stack = [Grammar.EOF, Grammar.START_SYMBOL]
         self.diagnostics = []
         self.log = []
+        self.rule_sequence = []
         self.accepted = False
 
     def parse(self):
@@ -67,22 +68,36 @@ class Parser:
             if lookahead.token_type != Grammar.EOF:
                 self.index += 1
                 return "panic: discard unexpected " + lookahead.token_type + "; " + message
-            return "panic: cannot discard EOF; " + message
+            return "panic: cannot discard $; " + message
 
         return "error: " + message
 
     def expand_non_terminal(self, non_terminal, lookahead):
         row = self.grammar.table.get(non_terminal, {})
-        production = row.get(lookahead.token_type)
+        rule_id = row.get(lookahead.token_type)
 
-        if production is not None:
+        if rule_id is not None:
+            left_side, production = self.grammar.rule(rule_id)
+            if left_side != non_terminal:
+                message = (
+                    "table selected rule "
+                    + str(rule_id)
+                    + " for "
+                    + non_terminal
+                    + ", but rule left side is "
+                    + left_side
+                )
+                self.diagnostics.append(ErrorLog("SA", message, lookahead))
+                return "internal error: " + message
+
             for symbol in reversed(production):
                 self.stack.append(symbol)
+            self.rule_sequence.append(rule_id)
             if len(production) == 0:
                 right_side = Grammar.EPSILON
             else:
                 right_side = " ".join(production)
-            return non_terminal + " -> " + right_side
+            return "rule " + str(rule_id) + ": " + non_terminal + " -> " + right_side
 
         expected = []
         for terminal in row:

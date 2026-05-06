@@ -1,0 +1,1312 @@
+============================================================================================
+littleXML LL(1) analyza
+============================================================================================
+Vstupny subor : D:\Škola\Ing\2.semester\SJ\projekt\inputs\03_valid_text_content.xml
+Recovery mode : panic
+
+Vstup:
+<message>Hello_123!</message>
+
+
+--------------------------------------------------------------------------------------------
+Tokeny
+--------------------------------------------------------------------------------------------
+001 | 1:1 <
+002 | 1:2 LETTER('m')
+003 | 1:3 LETTER('e')
+004 | 1:4 LETTER('s')
+005 | 1:5 LETTER('s')
+006 | 1:6 LETTER('a')
+007 | 1:7 LETTER('g')
+008 | 1:8 LETTER('e')
+009 | 1:9 >
+010 | 1:10 LETTER('H')
+011 | 1:11 LETTER('e')
+012 | 1:12 LETTER('l')
+013 | 1:13 LETTER('l')
+014 | 1:14 LETTER('o')
+015 | 1:15 _
+016 | 1:16 NUMBER('1')
+017 | 1:17 NUMBER('2')
+018 | 1:18 NUMBER('3')
+019 | 1:19 !
+020 | 1:20 </
+021 | 1:22 LETTER('m')
+022 | 1:23 LETTER('e')
+023 | 1:24 LETTER('s')
+024 | 1:25 LETTER('s')
+025 | 1:26 LETTER('a')
+026 | 1:27 LETTER('g')
+027 | 1:28 LETTER('e')
+028 | 1:29 >
+029 | 2:1 $
+
+--------------------------------------------------------------------------------------------
+Log syntaktickeho analyzatora
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+Iteracia 001
+Zasobnik pred : xmldokument EOF
+Vstup pred    : < LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : xmldokument -> element
+Zasobnik po   : element EOF
+Vstup po      : < LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 002
+Zasobnik pred : element EOF
+Vstup pred    : < LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : element -> < name element_tail
+Zasobnik po   : < name element_tail EOF
+Vstup po      : < LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 003
+Zasobnik pred : < name element_tail EOF
+Vstup pred    : < LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : < (riadok 1, stlpec 1)
+Krok          : match <
+Zasobnik po   : name element_tail EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 004
+Zasobnik pred : name element_tail EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 2)
+Krok          : name -> namestart name_tail
+Zasobnik po   : namestart name_tail element_tail EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 005
+Zasobnik pred : namestart name_tail element_tail EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 2)
+Krok          : namestart -> letter
+Zasobnik po   : letter name_tail element_tail EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 006
+Zasobnik pred : letter name_tail element_tail EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 2)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 007
+Zasobnik pred : LETTER name_tail element_tail EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 2)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 008
+Zasobnik pred : name_tail element_tail EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 3)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 009
+Zasobnik pred : namechar name_tail element_tail EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 3)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail element_tail EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 010
+Zasobnik pred : letter name_tail element_tail EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 3)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 011
+Zasobnik pred : LETTER name_tail element_tail EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') >
+                LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 3)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 012
+Zasobnik pred : name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 4)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 013
+Zasobnik pred : namechar name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 4)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 014
+Zasobnik pred : letter name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 4)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 015
+Zasobnik pred : LETTER name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H')
+                LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 4)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 016
+Zasobnik pred : name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 5)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 017
+Zasobnik pred : namechar name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 5)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 018
+Zasobnik pred : letter name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 5)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 019
+Zasobnik pred : LETTER name_tail element_tail EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e')
+                LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 5)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 020
+Zasobnik pred : name_tail element_tail EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 6)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 021
+Zasobnik pred : namechar name_tail element_tail EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 6)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail element_tail EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 022
+Zasobnik pred : letter name_tail element_tail EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 6)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 023
+Zasobnik pred : LETTER name_tail element_tail EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l')
+                LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 6)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail EOF
+Vstup po      : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 024
+Zasobnik pred : name_tail element_tail EOF
+Vstup pred    : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 7)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail EOF
+Vstup po      : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 025
+Zasobnik pred : namechar name_tail element_tail EOF
+Vstup pred    : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 7)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail element_tail EOF
+Vstup po      : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 026
+Zasobnik pred : letter name_tail element_tail EOF
+Vstup pred    : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 7)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail EOF
+Vstup po      : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 027
+Zasobnik pred : LETTER name_tail element_tail EOF
+Vstup pred    : LETTER('g') LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l')
+                LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 7)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail EOF
+Vstup po      : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 028
+Zasobnik pred : name_tail element_tail EOF
+Vstup pred    : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 8)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail element_tail EOF
+Vstup po      : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 029
+Zasobnik pred : namechar name_tail element_tail EOF
+Vstup pred    : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 8)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail element_tail EOF
+Vstup po      : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 030
+Zasobnik pred : letter name_tail element_tail EOF
+Vstup pred    : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 8)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail element_tail EOF
+Vstup po      : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 031
+Zasobnik pred : LETTER name_tail element_tail EOF
+Vstup pred    : LETTER('e') > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _
+                NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 8)
+Krok          : match LETTER
+Zasobnik po   : name_tail element_tail EOF
+Vstup po      : > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 032
+Zasobnik pred : name_tail element_tail EOF
+Vstup pred    : > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : > (riadok 1, stlpec 9)
+Krok          : name_tail -> epsilon
+Zasobnik po   : element_tail EOF
+Vstup po      : > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 033
+Zasobnik pred : element_tail EOF
+Vstup pred    : > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : > (riadok 1, stlpec 9)
+Krok          : element_tail -> > element_content endtag
+Zasobnik po   : > element_content endtag EOF
+Vstup po      : > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 034
+Zasobnik pred : > element_content endtag EOF
+Vstup pred    : > LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : > (riadok 1, stlpec 9)
+Krok          : match >
+Zasobnik po   : element_content endtag EOF
+Vstup po      : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 035
+Zasobnik pred : element_content endtag EOF
+Vstup pred    : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('H') (riadok 1, stlpec 10)
+Krok          : element_content -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 036
+Zasobnik pred : word endtag EOF
+Vstup pred    : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('H') (riadok 1, stlpec 10)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 037
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('H') (riadok 1, stlpec 10)
+Krok          : char -> letter
+Zasobnik po   : letter word_tail endtag EOF
+Vstup po      : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 038
+Zasobnik pred : letter word_tail endtag EOF
+Vstup pred    : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('H') (riadok 1, stlpec 10)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER word_tail endtag EOF
+Vstup po      : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 039
+Zasobnik pred : LETTER word_tail endtag EOF
+Vstup pred    : LETTER('H') LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1')
+                NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('H') (riadok 1, stlpec 10)
+Krok          : match LETTER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 040
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 11)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 041
+Zasobnik pred : word endtag EOF
+Vstup pred    : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 11)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 042
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 11)
+Krok          : char -> letter
+Zasobnik po   : letter word_tail endtag EOF
+Vstup po      : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 043
+Zasobnik pred : letter word_tail endtag EOF
+Vstup pred    : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 11)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER word_tail endtag EOF
+Vstup po      : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 044
+Zasobnik pred : LETTER word_tail endtag EOF
+Vstup pred    : LETTER('e') LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2')
+                NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 11)
+Krok          : match LETTER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 045
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 12)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 046
+Zasobnik pred : word endtag EOF
+Vstup pred    : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 12)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 047
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 12)
+Krok          : char -> letter
+Zasobnik po   : letter word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 048
+Zasobnik pred : letter word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 12)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 049
+Zasobnik pred : LETTER word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') !
+                </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 12)
+Krok          : match LETTER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 050
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 13)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 051
+Zasobnik pred : word endtag EOF
+Vstup pred    : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 13)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 052
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 13)
+Krok          : char -> letter
+Zasobnik po   : letter word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 053
+Zasobnik pred : letter word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 13)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER word_tail endtag EOF
+Vstup po      : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 054
+Zasobnik pred : LETTER word_tail endtag EOF
+Vstup pred    : LETTER('l') LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </
+                LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('l') (riadok 1, stlpec 13)
+Krok          : match LETTER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 055
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('o') (riadok 1, stlpec 14)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 056
+Zasobnik pred : word endtag EOF
+Vstup pred    : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('o') (riadok 1, stlpec 14)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 057
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('o') (riadok 1, stlpec 14)
+Krok          : char -> letter
+Zasobnik po   : letter word_tail endtag EOF
+Vstup po      : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 058
+Zasobnik pred : letter word_tail endtag EOF
+Vstup pred    : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('o') (riadok 1, stlpec 14)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER word_tail endtag EOF
+Vstup po      : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 059
+Zasobnik pred : LETTER word_tail endtag EOF
+Vstup pred    : LETTER('o') _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m')
+                LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('o') (riadok 1, stlpec 14)
+Krok          : match LETTER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 060
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : _ (riadok 1, stlpec 15)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 061
+Zasobnik pred : word endtag EOF
+Vstup pred    : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : _ (riadok 1, stlpec 15)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 062
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : _ (riadok 1, stlpec 15)
+Krok          : char -> _
+Zasobnik po   : _ word_tail endtag EOF
+Vstup po      : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 063
+Zasobnik pred : _ word_tail endtag EOF
+Vstup pred    : _ NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e')
+                LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : _ (riadok 1, stlpec 15)
+Krok          : match _
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 064
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('1') (riadok 1, stlpec 16)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 065
+Zasobnik pred : word endtag EOF
+Vstup pred    : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('1') (riadok 1, stlpec 16)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 066
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('1') (riadok 1, stlpec 16)
+Krok          : char -> digit
+Zasobnik po   : digit word_tail endtag EOF
+Vstup po      : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 067
+Zasobnik pred : digit word_tail endtag EOF
+Vstup pred    : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('1') (riadok 1, stlpec 16)
+Krok          : digit -> NUMBER
+Zasobnik po   : NUMBER word_tail endtag EOF
+Vstup po      : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 068
+Zasobnik pred : NUMBER word_tail endtag EOF
+Vstup pred    : NUMBER('1') NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s')
+                LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('1') (riadok 1, stlpec 16)
+Krok          : match NUMBER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 069
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('2') (riadok 1, stlpec 17)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 070
+Zasobnik pred : word endtag EOF
+Vstup pred    : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('2') (riadok 1, stlpec 17)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 071
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('2') (riadok 1, stlpec 17)
+Krok          : char -> digit
+Zasobnik po   : digit word_tail endtag EOF
+Vstup po      : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 072
+Zasobnik pred : digit word_tail endtag EOF
+Vstup pred    : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('2') (riadok 1, stlpec 17)
+Krok          : digit -> NUMBER
+Zasobnik po   : NUMBER word_tail endtag EOF
+Vstup po      : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 073
+Zasobnik pred : NUMBER word_tail endtag EOF
+Vstup pred    : NUMBER('2') NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s')
+                LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : NUMBER('2') (riadok 1, stlpec 17)
+Krok          : match NUMBER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 074
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : NUMBER('3') (riadok 1, stlpec 18)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 075
+Zasobnik pred : word endtag EOF
+Vstup pred    : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : NUMBER('3') (riadok 1, stlpec 18)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 076
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : NUMBER('3') (riadok 1, stlpec 18)
+Krok          : char -> digit
+Zasobnik po   : digit word_tail endtag EOF
+Vstup po      : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 077
+Zasobnik pred : digit word_tail endtag EOF
+Vstup pred    : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : NUMBER('3') (riadok 1, stlpec 18)
+Krok          : digit -> NUMBER
+Zasobnik po   : NUMBER word_tail endtag EOF
+Vstup po      : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 078
+Zasobnik pred : NUMBER word_tail endtag EOF
+Vstup pred    : NUMBER('3') ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a')
+                LETTER('g') LETTER('e') > $
+Peek          : NUMBER('3') (riadok 1, stlpec 18)
+Krok          : match NUMBER
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 079
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : ! (riadok 1, stlpec 19)
+Krok          : word_tail -> word
+Zasobnik po   : word endtag EOF
+Vstup po      : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 080
+Zasobnik pred : word endtag EOF
+Vstup pred    : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : ! (riadok 1, stlpec 19)
+Krok          : word -> char word_tail
+Zasobnik po   : char word_tail endtag EOF
+Vstup po      : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 081
+Zasobnik pred : char word_tail endtag EOF
+Vstup pred    : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : ! (riadok 1, stlpec 19)
+Krok          : char -> !
+Zasobnik po   : ! word_tail endtag EOF
+Vstup po      : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 082
+Zasobnik pred : ! word_tail endtag EOF
+Vstup pred    : ! </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : ! (riadok 1, stlpec 19)
+Krok          : match !
+Zasobnik po   : word_tail endtag EOF
+Vstup po      : </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 083
+Zasobnik pred : word_tail endtag EOF
+Vstup pred    : </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : </ (riadok 1, stlpec 20)
+Krok          : word_tail -> epsilon
+Zasobnik po   : endtag EOF
+Vstup po      : </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 084
+Zasobnik pred : endtag EOF
+Vstup pred    : </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : </ (riadok 1, stlpec 20)
+Krok          : endtag -> </ name >
+Zasobnik po   : </ name > EOF
+Vstup po      : </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 085
+Zasobnik pred : </ name > EOF
+Vstup pred    : </ LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : </ (riadok 1, stlpec 20)
+Krok          : match </
+Zasobnik po   : name > EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 086
+Zasobnik pred : name > EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 22)
+Krok          : name -> namestart name_tail
+Zasobnik po   : namestart name_tail > EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 087
+Zasobnik pred : namestart name_tail > EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 22)
+Krok          : namestart -> letter
+Zasobnik po   : letter name_tail > EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 088
+Zasobnik pred : letter name_tail > EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 22)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail > EOF
+Vstup po      : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 089
+Zasobnik pred : LETTER name_tail > EOF
+Vstup pred    : LETTER('m') LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g')
+                LETTER('e') > $
+Peek          : LETTER('m') (riadok 1, stlpec 22)
+Krok          : match LETTER
+Zasobnik po   : name_tail > EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 090
+Zasobnik pred : name_tail > EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 23)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail > EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 091
+Zasobnik pred : namechar name_tail > EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 23)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail > EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 092
+Zasobnik pred : letter name_tail > EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 23)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail > EOF
+Vstup po      : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 093
+Zasobnik pred : LETTER name_tail > EOF
+Vstup pred    : LETTER('e') LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 23)
+Krok          : match LETTER
+Zasobnik po   : name_tail > EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 094
+Zasobnik pred : name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 24)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail > EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 095
+Zasobnik pred : namechar name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 24)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail > EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 096
+Zasobnik pred : letter name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 24)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail > EOF
+Vstup po      : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 097
+Zasobnik pred : LETTER name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 24)
+Krok          : match LETTER
+Zasobnik po   : name_tail > EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 098
+Zasobnik pred : name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 25)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail > EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 099
+Zasobnik pred : namechar name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 25)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail > EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 100
+Zasobnik pred : letter name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 25)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail > EOF
+Vstup po      : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 101
+Zasobnik pred : LETTER name_tail > EOF
+Vstup pred    : LETTER('s') LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('s') (riadok 1, stlpec 25)
+Krok          : match LETTER
+Zasobnik po   : name_tail > EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 102
+Zasobnik pred : name_tail > EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 26)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail > EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 103
+Zasobnik pred : namechar name_tail > EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 26)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail > EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 104
+Zasobnik pred : letter name_tail > EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 26)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail > EOF
+Vstup po      : LETTER('a') LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 105
+Zasobnik pred : LETTER name_tail > EOF
+Vstup pred    : LETTER('a') LETTER('g') LETTER('e') > $
+Peek          : LETTER('a') (riadok 1, stlpec 26)
+Krok          : match LETTER
+Zasobnik po   : name_tail > EOF
+Vstup po      : LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 106
+Zasobnik pred : name_tail > EOF
+Vstup pred    : LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 27)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail > EOF
+Vstup po      : LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 107
+Zasobnik pred : namechar name_tail > EOF
+Vstup pred    : LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 27)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail > EOF
+Vstup po      : LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 108
+Zasobnik pred : letter name_tail > EOF
+Vstup pred    : LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 27)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail > EOF
+Vstup po      : LETTER('g') LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 109
+Zasobnik pred : LETTER name_tail > EOF
+Vstup pred    : LETTER('g') LETTER('e') > $
+Peek          : LETTER('g') (riadok 1, stlpec 27)
+Krok          : match LETTER
+Zasobnik po   : name_tail > EOF
+Vstup po      : LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 110
+Zasobnik pred : name_tail > EOF
+Vstup pred    : LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 28)
+Krok          : name_tail -> namechar name_tail
+Zasobnik po   : namechar name_tail > EOF
+Vstup po      : LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 111
+Zasobnik pred : namechar name_tail > EOF
+Vstup pred    : LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 28)
+Krok          : namechar -> letter
+Zasobnik po   : letter name_tail > EOF
+Vstup po      : LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 112
+Zasobnik pred : letter name_tail > EOF
+Vstup pred    : LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 28)
+Krok          : letter -> LETTER
+Zasobnik po   : LETTER name_tail > EOF
+Vstup po      : LETTER('e') > $
+--------------------------------------------------------------------------------------------
+Iteracia 113
+Zasobnik pred : LETTER name_tail > EOF
+Vstup pred    : LETTER('e') > $
+Peek          : LETTER('e') (riadok 1, stlpec 28)
+Krok          : match LETTER
+Zasobnik po   : name_tail > EOF
+Vstup po      : > $
+--------------------------------------------------------------------------------------------
+Iteracia 114
+Zasobnik pred : name_tail > EOF
+Vstup pred    : > $
+Peek          : > (riadok 1, stlpec 29)
+Krok          : name_tail -> epsilon
+Zasobnik po   : > EOF
+Vstup po      : > $
+--------------------------------------------------------------------------------------------
+Iteracia 115
+Zasobnik pred : > EOF
+Vstup pred    : > $
+Peek          : > (riadok 1, stlpec 29)
+Krok          : match >
+Zasobnik po   : EOF
+Vstup po      : $
+--------------------------------------------------------------------------------------------
+Iteracia 116
+Zasobnik pred : EOF
+Vstup pred    : $
+Peek          : $ (riadok 2, stlpec 1)
+Krok          : match EOF
+Zasobnik po   : (prazdne)
+Vstup po      : (prazdne)
+
+--------------------------------------------------------------------------------------------
+Problemy validacie
+--------------------------------------------------------------------------------------------
+(ziadne)
+
+============================================================================================
+VYSLEDOK: SYNTAX OK
+============================================================================================

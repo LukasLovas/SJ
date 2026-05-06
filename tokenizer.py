@@ -1,8 +1,30 @@
+import re
+
 from grammar import Grammar
 from token import ErrorLog, Token
 
 
 class Tokenizer:
+    WHITESPACE = re.compile(r"\s+")
+    TOKEN_PATTERNS = (
+        ("<?xml", re.compile(r"<\?xml")),
+        ("version=", re.compile(r"version=")),
+        ("?>", re.compile(r"\?>")),
+        ("</", re.compile(r"</")),
+        ("/>", re.compile(r"/>")),
+        ("<", re.compile(r"<")),
+        (">", re.compile(r">")),
+        (".", re.compile(r"\.")),
+        ("-", re.compile(r"-")),
+        (":", re.compile(r":")),
+        ("_", re.compile(r"_")),
+        ("!", re.compile(r"!")),
+        ("@", re.compile(r"@")),
+        ("#", re.compile(r"#")),
+        ("LETTER", re.compile(r"[A-Za-z]")),
+        ("NUMBER", re.compile(r"[0-9]")),
+    )
+
     def __init__(self, source, recovery):
         self.source = source
         self.recovery = recovery
@@ -11,27 +33,12 @@ class Tokenizer:
         self.column = 1
         self.tokens = []
         self.diagnostics = []
-        self.fixed_tokens = (
-            ("<?xml", "<?xml"),
-            ("version=", "version="),
-            ("?>", "?>"),
-            ("</", "</"),
-            ("/>", "/>"),
-            ("<", "<"),
-            (">", ">"),
-            (".", "."),
-            ("-", "-"),
-            (":", ":"),
-            ("_", "_"),
-            ("!", "!"),
-            ("@", "@"),
-            ("#", "#"),
-        )
 
     def tokenize(self):
         while self.position < len(self.source):
-            if self.source[self.position].isspace():
-                self.advance_position(self.source[self.position])
+            whitespace = self.WHITESPACE.match(self.source, self.position)
+            if whitespace is not None:
+                self.advance_position(whitespace.group(0))
                 continue
 
             token = self.next_token()
@@ -50,30 +57,37 @@ class Tokenizer:
                 self.diagnostics.append(ErrorLog("LEX", message, bad_token))
                 break
 
-        self.tokens.append(Token(Grammar.EOF, "", self.line, self.column, self.position))
+        self.tokens.append(Token(Grammar.EOF, Grammar.EOF, self.line, self.column, self.position))
         return self.tokens
 
     def next_token(self):
-        for token_type, value in self.fixed_tokens:
-            if self.source.startswith(value, self.position):
-                return self.build_token_and_advance(token_type, value)
+        match = self.best_token_match()
+        if match is None:
+            return None
 
-        character = self.source[self.position]
-        if self.is_ascii_letter(character):
-            return self.build_token_and_advance("LETTER", character)
-        if character.isdigit():
-            return self.build_token_and_advance("NUMBER", character)
-        return None
+        token_type, value = match
+        return self.build_token_and_advance(token_type, value)
 
-    def is_ascii_letter(self, character):
-        return ("A" <= character <= "Z") or ("a" <= character <= "z")
+    def best_token_match(self):
+        best_type = None
+        best_value = None
+
+        for token_type, pattern in self.TOKEN_PATTERNS:
+            match = pattern.match(self.source, self.position)
+            if match is None:
+                continue
+
+            value = match.group(0)
+            if best_value is None or len(value) > len(best_value):
+                best_type = token_type
+                best_value = value
+
+        if best_type is None:
+            return None
+        return best_type, best_value
 
     def starts_token(self):
-        for _token_type, value in self.fixed_tokens:
-            if self.source.startswith(value, self.position):
-                return True
-        character = self.source[self.position]
-        return self.is_ascii_letter(character) or character.isdigit()
+        return self.best_token_match() is not None
 
     def build_token_and_advance(self, token_type, value):
         token = self.make_token(token_type, value)
@@ -95,11 +109,13 @@ class Tokenizer:
     def panic_skip(self):
         start = self.position
         while self.position < len(self.source):
-            if self.source[self.position].isspace():
+            if self.WHITESPACE.match(self.source, self.position) is not None:
                 break
             if self.starts_token():
                 break
             self.advance_position(self.source[self.position])
+
         if self.position == start:
             self.advance_position(self.source[self.position])
+
         return self.source[start:self.position]

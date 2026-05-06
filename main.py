@@ -29,37 +29,48 @@ class Main:
                 self.print_usage()
                 return 2
 
-        self.load_default_table_if_exists()
+        if not self.load_default_table():
+            return 1
         return self.run_analysis(input_file, output_file, recovery)
 
     def run_interactive(self):
-        self.load_default_table_if_exists()
+        if not self.load_default_table():
+            return 1
 
         inputs_directory = self.project_path("inputs")
         outputs_directory = self.project_path("outputs")
 
         input_files = self.list_input_files(inputs_directory)
-        if len(input_files) == 0:
-            print("V priecinku inputs nie su ziadne vstupne subory.")
-            print("Ocakavany priecinok: " + inputs_directory)
-            return 2
 
         print("littleXML LL(1) analyzator")
         print("")
         print("Dostupne vstupy:")
-        for index, file_name in enumerate(input_files, start=1):
-            print("  " + str(index) + ". " + file_name)
+        if len(input_files) == 0:
+            print("  (v priecinku inputs nie su ziadne vstupne subory)")
+        else:
+            for index, file_name in enumerate(input_files, start=1):
+                print("  " + str(index) + ". " + file_name)
 
-        selected_index = self.read_choice("Vyber vstupny subor", len(input_files))
+        custom_choice = len(input_files) + 1
+        print("  " + str(custom_choice) + ". Vlastny vstup")
+
+        selected_index = self.read_choice("Vyber vstupny subor", custom_choice)
         if selected_index is None:
             return 2
+
+        if selected_index == len(input_files):
+            input_path = self.read_custom_input_path()
+            if input_path is None:
+                return 2
+            input_file = input_path
+        else:
+            input_file = input_files[selected_index]
+            input_path = os.path.join(inputs_directory, input_file)
 
         recovery = self.read_recovery_mode()
         if recovery is None:
             return 2
 
-        input_file = input_files[selected_index]
-        input_path = os.path.join(inputs_directory, input_file)
         output_file = self.output_file_name(input_file, recovery)
         output_path = os.path.join(outputs_directory, output_file)
 
@@ -128,6 +139,15 @@ class Main:
         files.sort()
         return files
 
+    def read_custom_input_path(self):
+        print("Priklad cesty: .\\projekt\\inputs\\01_valid_empty_element.xml")
+        raw_value = input("Zadaj cestu k vstupnemu suboru: ").strip()
+        if raw_value == "":
+            print("Cesta k vstupnemu suboru nemoze byt prazdna.")
+            return None
+
+        return os.path.expanduser(raw_value.strip("\"'"))
+
     def read_choice(self, label, count):
         raw_value = input(label + " [1-" + str(count) + "]: ").strip()
         try:
@@ -172,19 +192,22 @@ class Main:
         print("  python .\\projekt\\main.py .\\projekt\\inputs\\01_valid_empty_element.xml .\\projekt\\outputs\\manual_report.txt")
         print("  python .\\projekt\\main.py .\\projekt\\inputs\\07_invalid_two_nested_children.xml .\\projekt\\outputs\\panic_report.txt panic")
 
-    def load_default_table_if_exists(self):
+    def load_default_table(self):
         table_file = self.default_table_path()
         try:
             self.grammar.load_table(table_file)
-        except Exception:
-            pass
+        except Exception as error:
+            print("Prechodovu tabulku sa nepodarilo nacitat: " + str(error))
+            print("Ocakavany subor: " + table_file)
+            return False
+        return True
 
     def default_table_path(self):
         normalized = __file__.replace("\\", "/")
         if "/" not in normalized:
-            return "table.txt"
+            return "table.csv"
         directory = normalized.rsplit("/", 1)[0]
-        return directory + "/table.txt"
+        return directory + "/table.csv"
 
     def project_path(self, child):
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), child)

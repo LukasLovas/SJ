@@ -283,20 +283,91 @@ Preto musíme upraviť spôsob, akým reprezentujeme obsah elementu.
 
 \subsection{Odstránenie konfliktov a výsledná gramatika}
 
-Konflikt vznikol preto, že \code{words} aj \code{elements} mohli byť prázdne. Obsah elementu preto rozdelíme priamo podľa toho, akým symbolom začína:
+Neterminál \code{element\_body} bol iba pomocný neterminál z ľavej faktorizácie. V tejto časti ho už neponecháme ako samostatný problémový bod, ale nahradíme ho jednoznačným rozhodnutím podľa prvého symbolu obsahu elementu.
+
+Pred úpravou sme mali:
 
 \begin{lstlisting}
-element_body -> word endtag | element endtag | endtag
+element_tail -> /> | > element_body
+element_body -> words endtag | elements endtag
+words -> word words | epsilon
+elements -> element | epsilon
 \end{lstlisting}
 
-V implementácii tento tvar zapisujeme kompaktnejšie ako samostatný neterminál \code{element\_content}:
+Konflikt vznikol preto, že prázdny obsah sa dal odvodiť dvoma rôznymi cestami:
+
+\begin{lstlisting}
+element_body -> words endtag
+words -> epsilon
+\end{lstlisting}
+
+a zároveň:
+
+\begin{lstlisting}
+element_body -> elements endtag
+elements -> epsilon
+\end{lstlisting}
+
+Preto pri vstupe \code{</} nebolo jasné, či má tabuľkový analyzátor použiť vetvu cez \code{words}, alebo vetvu cez \code{elements}. Prázdny obsah však v jazyku potrebujeme iba raz. Preto obsah elementu rozdelíme priamo na tri prípady:
 
 \begin{lstlisting}
 element_tail -> /> | > element_content endtag
 element_content -> word | element | epsilon
 \end{lstlisting}
 
-Tento zápis zodpovedá trom možnostiam: textový obsah, vnorený element alebo prázdny obsah. Zároveň už nepoužívame pôvodné pravidlá \code{words} a \code{elements}, ktoré spôsobovali konflikt.
+Tento zápis znamená:
+
+\begin{itemize}
+    \item ak obsah začína znakom z množiny \(W\), použije sa pravidlo \code{element\_content -> word},
+    \item ak obsah začína terminálom \code{<}, použije sa pravidlo \code{element\_content -> element},
+    \item ak obsah začína terminálom \code{</}, použije sa pravidlo \code{element\_content -> epsilon}.
+\end{itemize}
+
+Pre neterminál \code{element\_content} potom dostaneme:
+
+\[
+\First(\texttt{word}) = W,
+\qquad
+\First(\texttt{element}) = \{\texttt{<}\},
+\qquad
+\Follow(\texttt{element\_content}) = \{\texttt{</}\}.
+\]
+
+FIRST/FIRST konflikt zmizne, pretože:
+
+\[
+W \cap \{\texttt{<}\} = \emptyset.
+\]
+
+FIRST/FOLLOW konflikt pri epsilon pravidle tiež nevznikne, pretože epsilon pravidlo sa zapisuje podľa \(\Follow(\code{element\_content})\), teda iba pod \code{</}:
+
+\[
+\bigl(\First(\texttt{word}) \cup \First(\texttt{element})\bigr)
+\cap
+\Follow(\texttt{element\_content})
+=
+(W \cup \{\texttt{<}\}) \cap \{\texttt{</}\}
+=
+\emptyset.
+\]
+
+Tým sa odstráni aj pôvodný konflikt pri \code{word\_tail}. V medzivýslednej gramatike sa po jednom \code{word} mohlo podľa pravidla \code{words -> word words} začať ďalšie \code{word}, preto \(\Follow(\code{word\_tail})\) obsahovalo množinu \(W\). Po odstránení \code{words} sa \code{word} používa priamo v pravidle \code{element\_content -> word}; za ním nasleduje už iba \code{endtag}. Preto platí:
+
+\[
+\Follow(\texttt{word\_tail}) = \{\texttt{</}\}
+\]
+
+a teda:
+
+\[
+\First(\texttt{word}) \cap \Follow(\texttt{word\_tail})
+=
+W \cap \{\texttt{</}\}
+=
+\emptyset.
+\]
+
+Výsledná úprava teda nie je nový významový krok navyše, ale zlúčenie prázdneho obsahu do jednej vetvy a odstránenie nejednoznačného delenia textu na viacero \code{word} pravidiel.
 
 Výsledná LL(1) gramatika použitá v implementácii je:
 

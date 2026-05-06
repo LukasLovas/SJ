@@ -1,48 +1,12 @@
+import csv
+
+from rules import RULES
+
+
 class Grammar:
     EPSILON = "epsilon"
-    EOF = "EOF"
+    EOF = "$"
     START_SYMBOL = "xmldokument"
-
-    TERMINALS = (
-        "<?xml",
-        "version=",
-        "?>",
-        ".",
-        "<",
-        ">",
-        "</",
-        "-",
-        ":",
-        "_",
-        "/>",
-        "LETTER",
-        "NUMBER",
-        "!",
-        "@",
-        "#",
-        EOF,
-    )
-
-    NON_TERMINALS = (
-        "xmldokument",
-        "xmldecl",
-        "vernumb",
-        "element",
-        "element_tail",
-        "element_content",
-        "endtag",
-        "name",
-        "namestart",
-        "name_tail",
-        "namechar",
-        "letter",
-        "number",
-        "number_tail",
-        "digit",
-        "word",
-        "word_tail",
-        "char",
-    )
 
     FOLLOW = {
         "xmldokument": (EOF,),
@@ -66,142 +30,67 @@ class Grammar:
     }
 
     def __init__(self):
-        self.table = self.create_default_table()
-
-    def create_default_table(self):
-        name_start = ("LETTER", "_", ":")
-        name_char = ("LETTER", "NUMBER", ".", "-", "_", ":")
-        word_start = ("LETTER", "NUMBER", ".", "-", "_", ":", "!", "@", "#")
-
-        table = {
-            "xmldokument": {
-                "<?xml": ["xmldecl", "element"],
-                "<": ["element"],
-            },
-            "xmldecl": {
-                "<?xml": ["<?xml", "version=", "vernumb", "?>"],
-            },
-            "vernumb": {
-                "NUMBER": ["number", ".", "number"],
-            },
-            "element": {
-                "<": ["<", "name", "element_tail"],
-            },
-            "element_tail": {
-                "/>": ["/>"],
-                ">": [">", "element_content", "endtag"],
-            },
-            "element_content": {
-                "<": ["element"],
-                "</": [],
-            },
-            "endtag": {
-                "</": ["</", "name", ">"],
-            },
-            "name": {},
-            "namestart": {
-                "LETTER": ["letter"],
-                "_": ["_"],
-                ":": [":"],
-            },
-            "name_tail": {
-                ">": [],
-                "/>": [],
-            },
-            "namechar": {
-                "LETTER": ["letter"],
-                "NUMBER": ["digit"],
-                ".": ["."],
-                "-": ["-"],
-                "_": ["_"],
-                ":": [":"],
-            },
-            "letter": {
-                "LETTER": ["LETTER"],
-            },
-            "number": {
-                "NUMBER": ["digit", "number_tail"],
-            },
-            "number_tail": {
-                "NUMBER": ["number"],
-                "?>": [],
-                ".": [],
-            },
-            "digit": {
-                "NUMBER": ["NUMBER"],
-            },
-            "word": {},
-            "word_tail": {
-                "</": [],
-            },
-            "char": {
-                "LETTER": ["letter"],
-                "NUMBER": ["digit"],
-                ".": ["."],
-                "-": ["-"],
-                "_": ["_"],
-                ":": [":"],
-                "!": ["!"],
-                "@": ["@"],
-                "#": ["#"],
-            },
-        }
-
-        for lookahead in name_start:
-            table["name"][lookahead] = ["namestart", "name_tail"]
-        for lookahead in name_char:
-            table["name_tail"][lookahead] = ["namechar", "name_tail"]
-        for lookahead in word_start:
-            table["element_content"][lookahead] = ["word"]
-            table["word"][lookahead] = ["char", "word_tail"]
-            table["word_tail"][lookahead] = ["word"]
-
-        return table
+        self.rules = RULES
+        self.table = {}
+        self.terminals = ()
+        self.non_terminals = ()
 
     def is_terminal(self, symbol):
-        return symbol in self.TERMINALS
+        return symbol in self.terminals
 
     def is_non_terminal(self, symbol):
-        return symbol in self.NON_TERMINALS
+        return symbol in self.non_terminals
+
+    def rule(self, rule_id):
+        return self.rules[rule_id]
 
     def load_table(self, file_name):
-        loaded_table = self.create_default_table()
-        with open(file_name, "r", encoding="utf-8") as table_file:
-            line_number = 0
-            for raw_line in table_file:
-                line_number += 1
-                line = raw_line.strip()
-                if line == "" or line.startswith("#"):
+        with open(file_name, newline="", encoding="utf-8") as table_file:
+            reader = csv.reader(table_file)
+            first_row = next(reader)
+            table_terminals = self.strip_values(first_row[1:])
+            loaded_table = {}
+
+            for row in reader:
+                if self.row_is_empty(row):
                     continue
-                if "=" not in line or "," not in line.split("=", 1)[0]:
-                    raise ValueError("Invalid table line " + str(line_number) + ": " + raw_line)
 
-                left_side, right_side = line.split("=", 1)
-                non_terminal, lookahead = left_side.split(",", 1)
-                non_terminal = non_terminal.strip()
-                lookahead = lookahead.strip()
+                non_terminal = row[0].strip()
+                loaded_table[non_terminal] = {}
 
-                if not self.is_non_terminal(non_terminal):
-                    raise ValueError("Unknown non-terminal: " + non_terminal)
-                if not self.is_terminal(lookahead):
-                    raise ValueError("Unknown terminal: " + lookahead)
+                for terminal, raw_value in zip(table_terminals, row[1:]):
+                    value = raw_value.strip()
+                    if value != "":
+                        loaded_table[non_terminal][terminal] = int(value)
 
-                right_side = right_side.strip()
-                if right_side == "" or right_side == self.EPSILON:
-                    loaded_table[non_terminal][lookahead] = []
-                else:
-                    loaded_table[non_terminal][lookahead] = right_side.split()
+            self.table = loaded_table
+            self.terminals = tuple(table_terminals)
+            self.non_terminals = tuple(loaded_table.keys())
 
-        self.table = loaded_table
+    def strip_values(self, values):
+        stripped = []
+        for value in values:
+            stripped.append(value.strip())
+        return stripped
+
+    def row_is_empty(self, row):
+        for value in row:
+            if value.strip() != "":
+                return False
+        return True
 
     def print_table(self):
-        print("\nPrechodova tabulka:")
-        for non_terminal in self.NON_TERMINALS:
-            if non_terminal in self.table:
-                for terminal in self.table[non_terminal]:
-                    production = self.table[non_terminal][terminal]
-                    if len(production) == 0:
-                        right_side = self.EPSILON
-                    else:
-                        right_side = " ".join(production)
-                    print(non_terminal + ", " + terminal + " = " + right_side)
+        print("\n".join(self.format_transition_table()))
+
+    def format_transition_table(self):
+        lines = []
+        lines.append("Pravidla:")
+        for rule_id in sorted(self.rules):
+            left_side, production = self.rules[rule_id]
+            if len(production) == 0:
+                right_side = self.EPSILON
+            else:
+                right_side = " ".join(production)
+            lines.append(str(rule_id).rjust(2, "0") + ": " + left_side + " -> " + right_side)
+
+        return lines
