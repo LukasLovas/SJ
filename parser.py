@@ -29,7 +29,7 @@ class Parser:
             elif self.grammar.is_non_terminal(top):
                 action = self.expand_non_terminal(top, lookahead)
             else:
-                action = "internal error: unknown symbol " + top
+                action = "unknown symbol " + top
                 self.diagnostics.append(ErrorLog("SA", action, lookahead))
 
             self.add_log(step, stack_before, lookahead, action, input_index_before)
